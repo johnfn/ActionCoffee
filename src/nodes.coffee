@@ -246,6 +246,7 @@ exports.Block = class Block extends Base
   # It would be better not to generate them in the first place, but for now,
   # clean up obvious double-parentheses.
   compileRoot: (o) ->
+    o.bare = true
     o.indent  = if o.bare then '' else TAB
     o.scope   = new Scope null, this, null
     o.level   = LEVEL_TOP
@@ -978,7 +979,6 @@ exports.Class = class Class extends Base
     @ensureConstructor name
     @body.spaced = yes
     @body.expressions.unshift @ctor unless @ctor instanceof Code
-    @body.expressions.push lname
     @body.expressions.unshift @directives...
     @addBoundFunctions o
 
@@ -991,9 +991,7 @@ exports.Class = class Class extends Base
       params = call.variable.params or call.variable.base.params
       params.push new Param @superClass
 
-    klass = new Parens call, yes
-    klass = new Assign @variable, klass if @variable
-    klass.compile o
+    "class #{name} \{\n #{@body.compile o} \}"
 
 #### Assign
 
@@ -1039,6 +1037,8 @@ exports.Assign = class Assign extends Base
     if @value instanceof Code and match = METHOD_DEF.exec name
       @value.klass = match[1] if match[1]
       @value.name  = match[2] ? match[3] ? match[4] ? match[5]
+      return @value.compile o, LEVEL_LIST if @value instanceof Code #rewrite assigns back to normal function declarations.
+
     val = @value.compile o, LEVEL_LIST
     return "#{name}: #{val}" if @context is 'object'
     val = name + " #{ @context or '=' } " + val
@@ -1221,8 +1221,8 @@ exports.Code = class Code extends Base
       else if not @static
         o.scope.parent.assign '_this', 'this'
     idt   = o.indent
-    code  = 'function'
-    code  += ' ' + @name if @ctor
+    code  = 'public function'
+    code  += ' ' + @name
     code  += '(' + params.join(', ') + ') {'
     code  += "\n#{ @body.compileWithDeclarations o }\n#{@tab}" unless @body.isEmpty()
     code  += '}'
