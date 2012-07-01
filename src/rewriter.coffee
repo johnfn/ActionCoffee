@@ -129,15 +129,6 @@ class exports.Rewriter
       @tokens.splice i, 0, tok
 
     @scanTokens (token, i, tokens) ->
-      tag = token[0]
-
-      # Don't add implicit parenthesis in argument list. See https://github.com/bolinfest/coffee-script/commit/80ba5b9cd118301ec651e4bdc63b07d5c134ce1e#commitcomment-1525707
-      if tag == 'PARAM_START'
-        return @detectEnd(
-            i + 1,
-            (token) -> token == 'PARAM_END',
-            (token, idx) -> idx - i)
-
       if (tag = token[0]) in EXPRESSION_START
         stack.push [(if tag is 'INDENT' and @tag(i - 1) is '{' then '{' else tag), i]
         return 1
@@ -184,6 +175,14 @@ class exports.Rewriter
 
     @scanTokens (token, i, tokens) ->
       tag     = token[0]
+
+      # Don't add implicit parenthesis in argument list. See https://github.com/bolinfest/coffee-script/commit/80ba5b9cd118301ec651e4bdc63b07d5c134ce1e#commitcomment-1525707
+      if tag == 'PARAM_START'
+        return @detectEnd(
+            i + 1,
+            (token) -> token == 'PARAM_END',
+            (token, idx) -> idx - i)
+
       noCall  = yes if tag in ['CLASS', 'IF', 'FOR', 'WHILE']
       [prev, current, next] = tokens[i - 1 .. i + 1]
       callObject  = not noCall and tag is 'INDENT' and

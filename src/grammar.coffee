@@ -216,7 +216,7 @@ grammar =
     o 'ThisProperty'
     o 'Array'
     o 'Object'
-    o 'IDENTIFIER CALL_START IDENTIFIER CALL_END', -> new TypeExpression $1, $3
+    o 'IDENTIFIER IDENTIFIER', -> new TypeExpression $1, $2
   ]
 
   # A splat that occurs outside of a parameter list.
