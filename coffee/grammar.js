@@ -105,17 +105,10 @@
       })
     ],
     Code: [
-      o('PUBLIC PARAM_START ParamList PARAM_END FuncGlyph Block', function() {
-        return new Code($3, $6, $5, $1);
-      }), o('Thingy FuncGlyph Block', function() {
-        return new Code([], $2, $1, "private");
-      })
-    ],
-    Visibility: [
-      o('PUBLIC', function() {
-        return 'public';
-      }), o('PRIVATE', function() {
-        return 'public';
+      o('PARAM_START ParamList PARAM_END FuncGlyph Block', function() {
+        return new Code($2, $5, $4);
+      }), o('FuncGlyph Block', function() {
+        return new Code([], $2, $1);
       })
     ],
     FuncGlyph: [

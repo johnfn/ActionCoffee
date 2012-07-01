@@ -1462,7 +1462,7 @@
         params = call.variable.params || call.variable.base.params;
         params.push(new Param(this.superClass));
       }
-      return "public class " + name + " \{\n " + (this.body.compile(o)) + " \}";
+      return "class " + name + " \{\n " + (this.body.compile(o)) + " \}";
     };
 
     return Class;
@@ -1696,15 +1696,13 @@
 
     __extends(Code, _super);
 
-    function Code(params, body, tag, vis) {
+    function Code(params, body, tag) {
       this.params = params || [];
       this.body = body || new Block;
       this.bound = tag === 'boundfunc';
       if (this.bound) {
         this.context = '_this';
       }
-      this.vis = vis;
-      require('util').puts(vis);
     }
 
     Code.prototype.children = ['params', 'body'];
@@ -1813,12 +1811,7 @@
         }
       }
       idt = o.indent;
-      code = '';
-      if (this["static"]) {
-        code = "" + this.vis + " static function";
-      } else {
-        code = "" + this.vis + " function";
-      }
+      code = 'public function';
       code += ' ' + this.name;
       code += '(' + params.join(', ') + ') {';
       if (!this.body.isEmpty()) {

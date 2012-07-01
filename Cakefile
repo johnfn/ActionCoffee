@@ -1,7 +1,7 @@
 fs            = require 'fs'
 path          = require 'path'
-{extend}      = require './lib/coffee-script/helpers'
-CoffeeScript  = require './lib/coffee-script'
+{extend}      = require './lib/coffee-script-pristine/helpers'
+CoffeeScript  = require './lib/coffee-script-pristine'
 {spawn, exec} = require 'child_process'
 
 # ANSI Terminal Colors.
@@ -34,7 +34,7 @@ sources = [
 
 # Run a CoffeeScript through our node/coffee interpreter.
 run = (args, cb) ->
-  proc =         spawn 'node', ['bin/coffee'].concat(args)
+  proc =         spawn 'node', ['bin/coffee-pristine'].concat(args)
   proc.stderr.on 'data', (buffer) -> console.log buffer.toString()
   proc.on        'exit', (status) ->
     process.exit(1) if status != 0

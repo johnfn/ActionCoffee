@@ -553,6 +553,7 @@ JS_KEYWORDS = [
   'return', 'throw', 'break', 'continue', 'debugger'
   'if', 'else', 'switch', 'for', 'while', 'do', 'try', 'catch', 'finally'
   'class', 'extends', 'super'
+  'public', 'private'
 ]
 
 # CoffeeScript-only keywords.
@@ -578,8 +579,8 @@ COFFEE_KEYWORDS = COFFEE_KEYWORDS.concat COFFEE_ALIASES
 RESERVED = [
   'case', 'default', 'function', 'var', 'void', 'with', 'const', 'let', 'enum'
   'export', 'import', 'native', '__hasProp', '__extends', '__slice', '__bind'
-  '__indexOf', 'implements', 'interface', 'package', 'private', 'protected'
-  'public', 'static', 'yield'
+  '__indexOf', 'implements', 'interface', 'package', 'protected'
+  'static', 'yield'
 ]
 
 STRICT_PROSCRIBED = ['arguments', 'eval']

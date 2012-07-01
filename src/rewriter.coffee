@@ -26,6 +26,9 @@ class exports.Rewriter
     @tagPostfixConditionals()
     @addImplicitBraces()
     @addImplicitParentheses()
+
+    console.log (t[0] + '/' + t[1] for t in @tokens).join ' '
+
     @tokens
 
   # Rewrite the token stream, looking one token ahead and behind.

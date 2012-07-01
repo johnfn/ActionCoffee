@@ -1,0 +1,46 @@
+fs            = require 'fs'
+path          = require 'path'
+{extend}      = require './lib/coffee-script-pristine/helpers'
+CoffeeScript  = require './lib/coffee-script-pristine'
+{spawn, exec} = require 'child_process'
+
+# ANSI Terminal Colors.
+enableColors = no
+unless process.platform is 'win32'
+  enableColors = not process.env.NODE_DISABLE_COLORS
+
+bold = red = green = reset = ''
+if enableColors
+  bold  = '\x1B[0;1m'
+  red   = '\x1B[0;31m'
+  green = '\x1B[0;32m'
+  reset = '\x1B[0m'
+
+# Built file header.
+header = """
+  /**
+   * CoffeeScript Compiler v#{CoffeeScript.VERSION}
+   * http://coffeescript.org
+   *
+   * Copyright 2011, Jeremy Ashkenas
+   * Released under the MIT License
+   */
+"""
+
+sources = [
+  'coffee-script', 'grammar', 'helpers'
+  'lexer', 'nodes', 'rewriter', 'scope'
+].map (filename) -> "src/#{filename}.coffee"
+
+# Log a message with a color.
+log = (message, color, explanation) ->
+  console.log color + message + reset + ' ' + (explanation or '')
+
+option '-p', '--prefix [DIR]', 'set the installation prefix for `cake install`'
+
+task 'build:parser', 'rebuild the Jison parser (run build first)', ->
+  extend global, require('util')
+  require 'jison'
+  parser = require('./lib/coffee-script-pristine/grammar').parser
+  fs.writeFile 'lib/coffee-script/parser.js', parser.generate()
+

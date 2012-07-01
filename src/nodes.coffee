@@ -991,7 +991,7 @@ exports.Class = class Class extends Base
       params = call.variable.params or call.variable.base.params
       params.push new Param @superClass
 
-    "class #{name} \{\n #{@body.compile o} \}"
+    "public class #{name} \{\n #{@body.compile o} \}"
 
 #### Assign
 
@@ -1160,11 +1160,14 @@ exports.Assign = class Assign extends Base
 # When for the purposes of walking the contents of a function body, the Code
 # has no *children* -- they're within the inner scope.
 exports.Code = class Code extends Base
-  constructor: (params, body, tag) ->
+  constructor: (params, body, tag, vis) ->
     @params  = params or []
     @body    = body or new Block
     @bound   = tag is 'boundfunc'
     @context = '_this' if @bound
+    @vis = vis
+
+    require('util').puts(vis)
 
   children: ['params', 'body']
 
@@ -1223,9 +1226,9 @@ exports.Code = class Code extends Base
     idt   = o.indent
     code = ''
     if @static
-      code = 'public static function'
+      code = "#{@vis} static function"
     else
-      code  = 'public function'
+      code  = "#{@vis} function"
 
     code  += ' ' + @name
     code  += '(' + params.join(', ') + ') {'
