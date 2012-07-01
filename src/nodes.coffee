@@ -1221,7 +1221,12 @@ exports.Code = class Code extends Base
       else if not @static
         o.scope.parent.assign '_this', 'this'
     idt   = o.indent
-    code  = 'public function'
+    code = ''
+    if @static
+      code = 'public static function'
+    else
+      code  = 'public function'
+
     code  += ' ' + @name
     code  += '(' + params.join(', ') + ') {'
     code  += "\n#{ @body.compileWithDeclarations o }\n#{@tab}" unless @body.isEmpty()
