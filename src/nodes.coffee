@@ -1154,6 +1154,14 @@ exports.Assign = class Assign extends Base
     code = "[].splice.apply(#{name}, [#{fromDecl}, #{to}].concat(#{valDef})), #{valRef}"
     if o.level > LEVEL_TOP then "(#{code})" else code
 
+exports.TypeExpression = class TypeExpression extends Base
+  constructor: (@typeExpression, @identifier) ->
+
+  compileNode: (o) ->
+    @identifier
+
+  isComplex: NO
+
 #### Code
 
 # A function definition. This is the only node that creates a new Scope.
@@ -1261,7 +1269,10 @@ exports.Param = class Param extends Base
   children: ['name', 'value']
 
   compile: (o) ->
-    @name.compile o, LEVEL_LIST
+    if @name instanceof TypeExpression
+      "#{@name.typeExpression} #{@name.identifier}"
+    else
+      @name.compile o, LEVEL_LIST
 
   asReference: (o) ->
     return @reference if @reference
@@ -1294,6 +1305,9 @@ exports.Param = class Param extends Base
     return [name.value] if name instanceof Literal
     # * at-params `@foo`
     return atParam(name) if name instanceof Value
+    # * type-expressions `string x`
+    return [name.identifier] if name instanceof TypeExpression
+
     names = []
     for obj in name.objects
       # * assignments within destructured parameters `{foo:bar}`
