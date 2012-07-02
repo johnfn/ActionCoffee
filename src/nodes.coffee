@@ -1168,13 +1168,12 @@ exports.TypeExpression = class TypeExpression extends Base
 # has no *children* -- they're within the inner scope.
 exports.Code = class Code extends Base
   constructor: (params, body, tag, vis, returnType) ->
-    console.log returnType
     @params  = params or []
     @body    = body or new Block
     @bound   = tag is 'boundfunc'
     @context = '_this' if @bound
-    @vis = vis
     @returnType = returnType?.value
+    @vis = vis
 
   children: ['params', 'body']
 
@@ -1234,21 +1233,18 @@ exports.Code = class Code extends Base
       else if not @static
         o.scope.parent.assign '_this', 'this'
     idt   = o.indent
-    code = ''
-    if @static
-      code = "#{@vis} static function"
-    else
-      code  = "#{@vis} function"
 
     typedParams = (p.asTypeExpression().compile() for p in @params)
 
-    returnAnnotation = ""
-    if @returnType
-      returnAnnotation = ":#{@returnType}"
-    else
-      returnAnnotation = ""
+    @vis += " "
+    # Anonymous functions (those without names) have no visibility declaration.
+    @vis = "" if not @name?
 
-    code  += ' ' + @name
+    returnAnnotation = if @returnType then ":#{@returnType}" else ""
+
+    code = "#{@vis}#{if @static then 'static ' else ''}function"
+
+    code  += (if @name then ' ' + @name else "")
     code  += '(' + typedParams.join(', ') + ")#{returnAnnotation} {"
     code  += "\n#{ @body.compileWithDeclarations o }\n#{@tab}" unless @body.isEmpty()
     code  += '}'

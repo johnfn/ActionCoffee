@@ -171,6 +171,7 @@ grammar =
   # list.
   Code: [
     o 'Visibility Identifier PARAM_START ParamList PARAM_END FuncGlyph Block', -> new Code $4, $7, $6, $1, $2
+    o 'Identifier PARAM_START ParamList PARAM_END FuncGlyph Block', -> new Code $3, $6, $5, "public", $1
     o 'Thingy FuncGlyph Block',                        -> new Code [], $2, $1, "private"
   ]
 
