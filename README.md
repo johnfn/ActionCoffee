@@ -1,4 +1,6 @@
-# ActionCoffee is a little language that compiles into ActionScript.
+# ActionCoffee
+
+ActionCoffee is a little language that compiles into ActionScript.
 
 ## Example
 
