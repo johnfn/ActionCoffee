@@ -1156,10 +1156,7 @@ exports.Assign = class Assign extends Base
 
 exports.TypeExpression = class TypeExpression extends Base
   constructor: (@typeExpression, @identifier) ->
-
-  compileNode: (o) ->
-    @identifier
-
+  compileNode: (o) -> @identifier.compile()
   isComplex: NO
 
 #### Code
@@ -1174,8 +1171,6 @@ exports.Code = class Code extends Base
     @bound   = tag is 'boundfunc'
     @context = '_this' if @bound
     @vis = vis
-
-    require('util').puts(vis)
 
   children: ['params', 'body']
 
@@ -1205,6 +1200,9 @@ exports.Code = class Code extends Base
       splats = new Assign new Value(new Arr(p.asReference o for p in @params)),
                           new Value new Literal 'arguments'
       break
+
+    # This code builds up all the expressions on the top of the newly generated
+    # function (i.e. for @args).
     for param in @params
       if param.isComplex()
         val = ref = param.asReference o
@@ -1238,8 +1236,10 @@ exports.Code = class Code extends Base
     else
       code  = "#{@vis} function"
 
+    typedParams = (p.asTypeExpression().compile() for p in @params)
+
     code  += ' ' + @name
-    code  += '(' + params.join(', ') + ') {'
+    code  += '(' + typedParams.join(', ') + ') {'
     code  += "\n#{ @body.compileWithDeclarations o }\n#{@tab}" unless @body.isEmpty()
     code  += '}'
     return @tab + code if @ctor
@@ -1256,23 +1256,34 @@ exports.Code = class Code extends Base
   traverseChildren: (crossScope, func) ->
     super(crossScope, func) if crossScope
 
+exports.TypeExpression = class TypeExpression extends Base
+  constructor: (@type, @identifier) ->
+  compile: (o) ->
+    "#{@identifier.compile()}:#{@type}"
+  isComplex: NO
+
 #### Param
 
 # A parameter in a function definition. Beyond a typical Javascript parameter,
 # these parameters can also attach themselves to the context of the function,
 # as well as be a splat, gathering up a group of parameters into an array.
 exports.Param = class Param extends Base
-  constructor: (@name, @value, @splat) ->
+  constructor: (@name, @value, @splat, type) ->
+    @type = type.value
+
     if (name = @name.unwrapAll().value) in STRICT_PROSCRIBED
       throw SyntaxError "parameter name \"#{name}\" is not allowed"
 
-  children: ['name', 'value']
+  children: ['name', 'value', 'type']
 
   compile: (o) ->
-    if @name instanceof TypeExpression
-      "#{@name.typeExpression} #{@name.identifier}"
+    if @type
+      "#{@name.compile o, LEVEL_LIST}:#{@type}"
     else
       @name.compile o, LEVEL_LIST
+
+  asTypeExpression: (o) ->
+    new TypeExpression(@type, @asReference())
 
   asReference: (o) ->
     return @reference if @reference

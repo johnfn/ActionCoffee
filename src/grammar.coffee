@@ -170,7 +170,6 @@ grammar =
   # of **Block** preceded by a function arrow, with an optional parameter
   # list.
   Code: [
-    #o 'PARAM_START ParamList PARAM_END FuncGlyph Block', -> new Code $2, $5, $4
     o 'PUBLIC PARAM_START ParamList PARAM_END FuncGlyph Block', -> new Code $3, $6, $5, $1
     o 'Thingy FuncGlyph Block',                        -> new Code [], $2, $1, "private"
   ]
@@ -205,7 +204,7 @@ grammar =
   # A single parameter in a function definition can be ordinary, or a splat
   # that hoovers up the remaining arguments.
   Param: [
-    o 'ParamVar',                               -> new Param $1
+    o 'Identifier ParamVar',                    -> new Param $2, null, off, $1
     o 'ParamVar ...',                           -> new Param $1, null, on
     o 'ParamVar = Expression',                  -> new Param $1, $3
   ]
@@ -216,7 +215,6 @@ grammar =
     o 'ThisProperty'
     o 'Array'
     o 'Object'
-    o 'IDENTIFIER IDENTIFIER', -> new TypeExpression $1, $2
   ]
 
   # A splat that occurs outside of a parameter list.
