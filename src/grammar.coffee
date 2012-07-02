@@ -284,17 +284,25 @@ grammar =
     o 'AssignList OptComma INDENT AssignList OptComma OUTDENT', -> $1.concat $4
   ]
 
+  ImplementsList: [
+    o '', -> []
+    o 'Identifier', -> [$1]
+    o 'ImplementsList , Identifier', -> $1.concat $3
+  ]
+
   # Class definitions have optional bodies of prototype property assignments,
   # and optional references to the superclass.
   Class: [
-    o 'CLASS',                                           -> new Class
-    o 'CLASS Block',                                     -> new Class null, null, $2
-    o 'CLASS EXTENDS Expression',                        -> new Class null, $3
-    o 'CLASS EXTENDS Expression Block',                  -> new Class null, $3, $4
-    o 'CLASS SimpleAssignable',                          -> new Class $2
-    o 'CLASS SimpleAssignable Block',                    -> new Class $2, null, $3
-    o 'CLASS SimpleAssignable EXTENDS Expression',       -> new Class $2, $4
-    o 'CLASS SimpleAssignable EXTENDS Expression Block', -> new Class $2, $4, $5
+    o 'CLASS',                                                                            -> new Class
+    o 'CLASS Block',                                                                      -> new Class null, null, $2
+    o 'CLASS EXTENDS Expression',                                                         -> new Class null, $3
+    o 'CLASS EXTENDS Expression Block',                                                   -> new Class null, $3, $4
+    o 'CLASS SimpleAssignable',                                                           -> new Class $2
+    o 'CLASS SimpleAssignable Block',                                                     -> new Class $2, null, $3
+    o 'CLASS SimpleAssignable IMPLEMENTS ImplementsList Block',                           -> new Class $2, null, $5, $4
+    o 'CLASS SimpleAssignable EXTENDS Expression',                                        -> new Class $2, $4
+    o 'CLASS SimpleAssignable EXTENDS Expression Block',                                  -> new Class $2, $4, $5
+    o 'CLASS SimpleAssignable EXTENDS Expression IMPLEMENTS ImplementsList Block',        -> new Class $2, $4, $7, $6
   ]
 
   # Ordinary function invocation, or a chained series of calls.

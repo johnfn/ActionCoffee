@@ -552,7 +552,7 @@ JS_KEYWORDS = [
   'new', 'delete', 'typeof', 'in', 'instanceof'
   'return', 'throw', 'break', 'continue', 'debugger'
   'if', 'else', 'switch', 'for', 'while', 'do', 'try', 'catch', 'finally'
-  'class', 'extends', 'super'
+  'class', 'extends', 'implements', 'super'
   'public', 'private'
 ]
 
@@ -579,7 +579,7 @@ COFFEE_KEYWORDS = COFFEE_KEYWORDS.concat COFFEE_ALIASES
 RESERVED = [
   'case', 'default', 'function', 'var', 'with', 'const', 'let', 'enum'
   'export', 'import', 'native', '__hasProp', '__extends', '__slice', '__bind'
-  '__indexOf', 'implements', 'interface', 'package', 'protected'
+  '__indexOf', 'interface', 'package', 'protected'
   'static', 'yield'
 ]
 

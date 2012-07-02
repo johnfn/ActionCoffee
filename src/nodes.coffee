@@ -863,9 +863,10 @@ exports.Arr = class Arr extends Base
 # Initialize a **Class** with its name, an optional superclass, and a
 # list of prototype property assignments.
 exports.Class = class Class extends Base
-  constructor: (@variable, @parent, @body = new Block) ->
+  constructor: (@variable, @parent, @body = new Block, @implementList = []) ->
     @boundFuncs = []
     @body.classBody = yes
+    @implements = implementList
 
   children: ['variable', 'parent', 'body']
 
@@ -994,8 +995,11 @@ exports.Class = class Class extends Base
       params = call.variable.params or call.variable.base.params
       params.push new Param @superClass
     ###
-    
-    "public class #{name}#{if @parent then ' extends ' + @parent.base.value} \{\n #{@body.compile o}\}"
+    implementCode = ""
+    if @implementList.length
+      implementCode = " implements " + (i.value for i in @implementList).join ", "
+
+    "public class #{name}#{if @parent then ' extends ' + @parent.base.value else ""}#{implementCode} \{\n #{@body.compile o}\}"
 
 #### Assign
 
