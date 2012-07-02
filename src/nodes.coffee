@@ -968,6 +968,8 @@ exports.Class = class Class extends Base
   # equivalent syntax tree and compile that, in pieces. You can see the
   # constructor, property assignments, and inheritance getting built out below.
   compileNode: (o) ->
+    o.indent += TAB
+
     decl  = @determineName()
     name  = decl or '_Class'
     name = "_#{name}" if name.reserved
@@ -991,7 +993,7 @@ exports.Class = class Class extends Base
       params = call.variable.params or call.variable.base.params
       params.push new Param @superClass
 
-    "public class #{name} \{\n #{@body.compile o} \}"
+    "public class #{name} \{\n #{@body.compile o}\}"
 
 #### Assign
 
