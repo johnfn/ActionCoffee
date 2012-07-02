@@ -1240,7 +1240,7 @@ exports.Code = class Code extends Base
     # Anonymous functions (those without names) have no visibility declaration.
     @vis = "" if not @name?
 
-    returnAnnotation = if @returnType then ":#{@returnType}" else ""
+    returnAnnotation = if @returnType and not @ctor then ":#{@returnType}" else ""
 
     code = "#{@vis}#{if @static then 'static ' else ''}function"
 
