@@ -177,7 +177,7 @@ class exports.Rewriter
       tag     = token[0]
 
       # Don't add implicit parenthesis in argument list. See https://github.com/bolinfest/coffee-script/commit/80ba5b9cd118301ec651e4bdc63b07d5c134ce1e#commitcomment-1525707
-      if tag == 'PARAM_START'
+      if tag == 'PARAM_START' or tag == "INTERFACE"
         return @detectEnd(
             i + 1,
             (token) -> token == 'PARAM_END',

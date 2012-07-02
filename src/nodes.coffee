@@ -152,6 +152,22 @@ exports.Base = class Base
   # Is this node used to assign a certain variable?
   assigns: NO
 
+exports.InterfaceDecl = class InterfaceDecl extends Base
+  constructor: (@returnType, @funcName, @params) ->
+    @typedParams = (p.asTypeExpression().compile() for p in @params).join ", "
+
+  compile: (o) ->
+    "public function #{funcName} #{@typedParams};"
+
+exports.Interface = class Interface extends Base
+  constructor: (@name, @declarations) ->
+
+  compile: (o) ->
+    o.indent += TAB
+    result = "interface #{@name} \{"
+    result += (d.compile() for d in @declarations).join "\n"
+    result += "\}"
+
 #### Block
 
 # The block is the list of expressions that forms the body of an

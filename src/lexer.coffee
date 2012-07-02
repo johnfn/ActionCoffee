@@ -559,7 +559,7 @@ JS_KEYWORDS = [
 ]
 
 # CoffeeScript-only keywords.
-COFFEE_KEYWORDS = ['undefined', 'then', 'unless', 'until', 'loop', 'of', 'by', 'when', '<:']
+COFFEE_KEYWORDS = ['undefined', 'then', 'unless', 'until', 'loop', 'of', 'by', 'when', 'interface', '<:']
 
 COFFEE_ALIAS_MAP =
   and  : '&&'
@@ -581,7 +581,7 @@ COFFEE_KEYWORDS = COFFEE_KEYWORDS.concat COFFEE_ALIASES
 RESERVED = [
   'case', 'default', 'function', 'var', 'with', 'const', 'let', 'enum'
   'export', 'import', 'native', '__hasProp', '__extends', '__slice', '__bind'
-  '__indexOf', 'interface', 'package', 'protected'
+  '__indexOf', 'package', 'protected'
   'static', 'yield'
 ]
 

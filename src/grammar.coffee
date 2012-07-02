@@ -66,6 +66,7 @@ grammar =
     o 'Line',                                   -> Block.wrap [$1]
     o 'Body TERMINATOR Line',                   -> $1.push $3
     o 'Body TERMINATOR'
+    o 'Interface TERMINATOR Body'
   ]
 
   # Block and statements, which make up a line in a body.
@@ -304,6 +305,22 @@ grammar =
     o 'CLASS SimpleAssignable EXTENDS Expression',                                        -> new Class $2, $4
     o 'CLASS SimpleAssignable EXTENDS Expression Block',                                  -> new Class $2, $4, $5
     #o 'CLASS SimpleAssignable EXTENDS Expression IMPLEMENTS ImplementsList Block',        -> new Class $2, $4, $7, $6
+  ]
+
+  # Interface declarations.
+ 
+  InterfaceLine: [
+    o 'Identifier : Identifier ( ParamList )', -> new InterfaceDecl $1, $3, $5
+  ]
+
+  InterfaceList: [
+    o 'InterfaceLine',                           -> [$1]
+    o 'InterfaceList TERMINATOR InterfaceLine',  -> $1.concat $3
+    o 'InterfaceList TERMINATOR'
+  ]
+
+  Interface: [
+    o 'INTERFACE Identifier INDENT { InterfaceList } OUTDENT ', -> new Interface $2, $4
   ]
 
   # Ordinary function invocation, or a chained series of calls.
