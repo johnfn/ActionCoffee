@@ -153,20 +153,21 @@ exports.Base = class Base
   assigns: NO
 
 exports.InterfaceDecl = class InterfaceDecl extends Base
-  constructor: (@returnType, @funcName, @params) ->
-    @typedParams = (p.asTypeExpression().compile() for p in @params).join ", "
+  constructor: (@funcName, @returnType, @params) ->
 
   compile: (o) ->
-    "public function #{funcName} #{@typedParams};"
+    @typedParams = (p.asTypeExpression().compile o for p in @params).join ", "
+
+    "#{o.indent}function #{@funcName.value}(#{@typedParams}):#{@returnType.value};"
 
 exports.Interface = class Interface extends Base
   constructor: (@name, @declarations) ->
 
   compile: (o) ->
     o.indent += TAB
-    result = "interface #{@name} \{"
-    result += (d.compile() for d in @declarations).join "\n"
-    result += "\}"
+    result = "public interface #{@name.value} \{\n"
+    result += (d.compile o for d in @declarations).join "\n"
+    result += "\n\}"
 
 #### Block
 

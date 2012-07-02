@@ -66,11 +66,11 @@ grammar =
     o 'Line',                                   -> Block.wrap [$1]
     o 'Body TERMINATOR Line',                   -> $1.push $3
     o 'Body TERMINATOR'
-    o 'Interface TERMINATOR Body'
   ]
 
   # Block and statements, which make up a line in a body.
   Line: [
+    o 'Interface'
     o 'Expression'
     o 'Statement'
   ]
@@ -320,7 +320,7 @@ grammar =
   ]
 
   Interface: [
-    o 'INTERFACE Identifier INDENT { InterfaceList } OUTDENT ', -> new Interface $2, $4
+    o 'INTERFACE Identifier INDENT { InterfaceList } OUTDENT ', -> new Interface $2, $5
   ]
 
   # Ordinary function invocation, or a chained series of calls.
