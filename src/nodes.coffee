@@ -956,7 +956,7 @@ exports.Class = class Class extends Base
   ensureConstructor: (name) ->
     if not @ctor
       @ctor = new Code
-      @ctor.body.push new Literal "#{name}.__super__.constructor.apply(this, arguments)" if @parent
+      # @ctor.body.push new Literal "#{name}.__super__.constructor.apply(this, arguments)" if @parent
       @ctor.body.push new Literal "#{@externalCtor}.apply(this, arguments)" if @externalCtor
       @ctor.body.makeReturn()
       @body.expressions.unshift @ctor
@@ -986,14 +986,16 @@ exports.Class = class Class extends Base
 
     call  = Closure.wrap @body
 
+    ###
     if @parent
       @superClass = new Literal o.scope.freeVariable 'super', no
       @body.expressions.unshift new Extends lname, @superClass
       call.args.push @parent
       params = call.variable.params or call.variable.base.params
       params.push new Param @superClass
-
-    "public class #{name} \{\n #{@body.compile o}\}"
+    ###
+    
+    "public class #{name}#{if @parent then ' extends ' + @parent.base.value} \{\n #{@body.compile o}\}"
 
 #### Assign
 

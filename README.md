@@ -40,6 +40,6 @@ ActionCoffee is a little language that compiles into ActionScript.
 
 ## TODO
 
-* Inheritance support.
-* Constructors shouldn't have return type declarations.
+* Package support.
+* Interface support.
 * Type declarations for local variables.
