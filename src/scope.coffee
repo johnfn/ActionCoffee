@@ -23,12 +23,13 @@ exports.Scope = class Scope
     Scope.root = this unless @parent
 
   # Adds a new variable or overrides an existing one.
-  add: (name, type, immediate) ->
+  add: (name, type, immediate, typedecl) ->
     return @parent.add name, type, immediate if @shared and not immediate
     if Object::hasOwnProperty.call @positions, name
       @variables[@positions[name]].type = type
+      @variables[@positions[name]].typedecl = typedecl
     else
-      @positions[name] = @variables.push({name, type}) - 1
+      @positions[name] = @variables.push({name, type, typedecl}) - 1
 
   # When `super` is called, we need to find the name of the current method we're 
   # in, so that we know how to invoke the same method of the parent class. This 
@@ -41,9 +42,9 @@ exports.Scope = class Scope
 
   # Look up a variable name in lexical scope, and declare it if it does not
   # already exist.
-  find: (name) ->
+  find: (name, typedecl) ->
     return yes if @check name
-    @add name, 'var'
+    @add name, 'var', false, typedecl
     no
 
   # Reserve a variable name as originating from a function parameter for this
@@ -92,10 +93,10 @@ exports.Scope = class Scope
     realVars = []
     tempVars = []
     for v in @variables when v.type is 'var'
-      (if v.name.charAt(0) is '_' then tempVars else realVars).push v.name
+      (if v.name.charAt(0) is '_' then tempVars else realVars).push(v.name + ":" + v.typedecl)
     realVars.sort().concat tempVars.sort()
 
   # Return the list of assignments that are supposed to be made at the top
   # of this scope.
   assignedVariables: ->
-    "#{v.name} = #{v.type.value}" for v in @variables when v.type.assigned
+    "#{v.name}#{if v.typedecl then ":" + v.typedecl else ""} = #{v.type.value}" for v in @variables when v.type.assigned

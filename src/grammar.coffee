@@ -134,9 +134,10 @@ grammar =
 
   # Assignment of a variable, property, or index to a value.
   Assign: [
-    o 'Assignable = Expression',                -> new Assign $1, $3
-    o 'Assignable = TERMINATOR Expression',     -> new Assign $1, $4
-    o 'Assignable = INDENT Expression OUTDENT', -> new Assign $1, $4
+    o 'Assignable TYPEDECL Identifier = Expression',              -> new Assign $1, $5, null, null, $3
+    o 'Assignable = Expression',                                  -> new Assign $1, $3
+    o 'Assignable = TERMINATOR Expression',                       -> new Assign $1, $4
+    o 'Assignable = INDENT Expression OUTDENT',                   -> new Assign $1, $4
   ]
 
   # Assignment when it happens within an object literal. The difference from
@@ -302,7 +303,7 @@ grammar =
     o 'CLASS SimpleAssignable IMPLEMENTS ImplementsList Block',                           -> new Class $2, null, $5, $4
     o 'CLASS SimpleAssignable EXTENDS Expression',                                        -> new Class $2, $4
     o 'CLASS SimpleAssignable EXTENDS Expression Block',                                  -> new Class $2, $4, $5
-    o 'CLASS SimpleAssignable EXTENDS Expression IMPLEMENTS ImplementsList Block',        -> new Class $2, $4, $7, $6
+    #o 'CLASS SimpleAssignable EXTENDS Expression IMPLEMENTS ImplementsList Block',        -> new Class $2, $4, $7, $6
   ]
 
   # Ordinary function invocation, or a chained series of calls.

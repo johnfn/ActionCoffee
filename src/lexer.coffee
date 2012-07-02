@@ -119,6 +119,7 @@ exports.Lexer = class Lexer
       tag = switch id
         when '!'                 then 'UNARY'
         when '==', '!='          then 'COMPARE'
+        when '<:'                then 'TYPEDECL'
         when '&&', '||'          then 'LOGIC'
         when 'true', 'false'     then 'BOOL'
         when 'break', 'continue' then 'STATEMENT'
@@ -350,6 +351,7 @@ exports.Lexer = class Lexer
       tag = 'TERMINATOR'
     else if value in MATH            then tag = 'MATH'
     else if value in COMPARE         then tag = 'COMPARE'
+    else if value in TYPEDECL        then tag = 'TYPEDECL'
     else if value in COMPOUND_ASSIGN then tag = 'COMPOUND_ASSIGN'
     else if value in UNARY           then tag = 'UNARY'
     else if value in SHIFT           then tag = 'SHIFT'
@@ -557,7 +559,7 @@ JS_KEYWORDS = [
 ]
 
 # CoffeeScript-only keywords.
-COFFEE_KEYWORDS = ['undefined', 'then', 'unless', 'until', 'loop', 'of', 'by', 'when']
+COFFEE_KEYWORDS = ['undefined', 'then', 'unless', 'until', 'loop', 'of', 'by', 'when', '<:']
 
 COFFEE_ALIAS_MAP =
   and  : '&&'
@@ -611,6 +613,7 @@ OPERATOR   = /// ^ (
   ?: [-=]>             # function
    | [-+*/%<>&|^!?=]=  # compound assign / compare
    | >>>=?             # zero-fill right shift
+   | <:                # type declaration
    | ([-+:])\1         # doubles
    | ([&|<>])\2=?      # logic / shift
    | \?\.              # soak access
@@ -675,6 +678,8 @@ SHIFT   = ['<<', '>>', '>>>']
 
 # Comparison tokens.
 COMPARE = ['==', '!=', '<', '>', '<=', '>=']
+
+TYPEDECL = ['<:']
 
 # Mathematical tokens.
 MATH    = ['*', '/', '%']

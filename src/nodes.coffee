@@ -6,6 +6,8 @@
 {Scope} = require './scope'
 {RESERVED, STRICT_PROSCRIBED} = require './lexer'
 
+d = (o) -> console.log(require('util').inspect(o))
+
 # Import the helpers we plan to use.
 {compact, flatten, extend, merge, del, starts, ends, last, some} = require './helpers'
 
@@ -1006,7 +1008,7 @@ exports.Class = class Class extends Base
 # The **Assign** is used to assign a local variable to value, or to set the
 # property of an object -- including within object literals.
 exports.Assign = class Assign extends Base
-  constructor: (@variable, @value, @context, options) ->
+  constructor: (@variable, @value, @context, options, @typedecl) ->
     @param = options and options.param
     @subpattern = options and options.subpattern
     forbidden = (name = @variable.unwrapAll().value) in STRICT_PROSCRIBED
@@ -1034,14 +1036,16 @@ exports.Assign = class Assign extends Base
       return @compileSplice       o if @variable.isSplice()
       return @compileConditional  o if @context in ['||=', '&&=', '?=']
     name = @variable.compile o, LEVEL_LIST
+
     unless @context
       unless (varBase = @variable.unwrapAll()).isAssignable()
         throw SyntaxError "\"#{ @variable.compile o }\" cannot be assigned."
       unless varBase.hasProperties?()
         if @param
-          o.scope.add name, 'var'
+          o.scope.add name, 'var', false, @typedecl.value
         else
-          o.scope.find name
+          o.scope.find name, @typedecl.value
+
     if @value instanceof Code and match = METHOD_DEF.exec name
       @value.klass = match[1] if match[1]
       @value.name  = match[2] ? match[3] ? match[4] ? match[5]

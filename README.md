@@ -41,5 +41,4 @@ ActionCoffee is a little language that compiles into ActionScript.
 ## TODO
 
 * Package support.
-* Interface support.
 * Type declarations for local variables.
