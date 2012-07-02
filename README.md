@@ -7,36 +7,37 @@ ActionCoffee is a little language that compiles into ActionScript.
 *ActionCoffee:*
 
     class CandyCane
-      constructor: public (String yummy, int @bites) ->
+      constructor: public int (String yummy, int @bites) -> 0
 
-      eat: public () -> trace("nom")
+      eat: public void () -> trace("nom")
 
-      secret: private() -> trace("private method!")
+      secret: private String () -> "private method!"
 
-      @number: public () -> 5
+      @number: public int () -> 5
 
 *Generated ActionScript*
 
     public class CandyCane {
-       
-      public function CandyCane(yummy:String, bites:int) {
-          this.bites = bites;
+     
+      public function CandyCane(yummy:String, bites:int):int {
+        this.bites = bites;
+        0;
+
       }
 
-      public function eat() {
-          return trace("nom");
+      public function eat():void {
+        return trace("nom");
       };
 
-      private function secret() {
-          return trace("private method!");
+      private function secret():String {
+        return "private method!";
       };
 
-      public static function number() {
-          return 5;
+      public static function number():int {
+        return 5;
       };
     };
 
 ## TODO
 
-* Function return values.
 * Inheritance support.
