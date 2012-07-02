@@ -1167,12 +1167,14 @@ exports.TypeExpression = class TypeExpression extends Base
 # When for the purposes of walking the contents of a function body, the Code
 # has no *children* -- they're within the inner scope.
 exports.Code = class Code extends Base
-  constructor: (params, body, tag, vis) ->
+  constructor: (params, body, tag, vis, returnType) ->
+    console.log returnType
     @params  = params or []
     @body    = body or new Block
     @bound   = tag is 'boundfunc'
     @context = '_this' if @bound
     @vis = vis
+    @returnType = returnType?.value
 
   children: ['params', 'body']
 
@@ -1240,8 +1242,14 @@ exports.Code = class Code extends Base
 
     typedParams = (p.asTypeExpression().compile() for p in @params)
 
+    returnAnnotation = ""
+    if @returnType
+      returnAnnotation = ":#{@returnType}"
+    else
+      returnAnnotation = ""
+
     code  += ' ' + @name
-    code  += '(' + typedParams.join(', ') + ') {'
+    code  += '(' + typedParams.join(', ') + ")#{returnAnnotation} {"
     code  += "\n#{ @body.compileWithDeclarations o }\n#{@tab}" unless @body.isEmpty()
     code  += '}'
     return @tab + code if @ctor

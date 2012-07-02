@@ -170,7 +170,7 @@ grammar =
   # of **Block** preceded by a function arrow, with an optional parameter
   # list.
   Code: [
-    o 'Visibility PARAM_START ParamList PARAM_END FuncGlyph Block', -> new Code $3, $6, $5, $1
+    o 'Visibility Identifier PARAM_START ParamList PARAM_END FuncGlyph Block', -> new Code $4, $7, $6, $1, $2
     o 'Thingy FuncGlyph Block',                        -> new Code [], $2, $1, "private"
   ]
 

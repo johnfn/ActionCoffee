@@ -35,3 +35,8 @@ ActionCoffee is a little language that compiles into ActionScript.
           return 5;
       };
     };
+
+## TODO
+
+* Function return values.
+* Inheritance support.
